@@ -438,6 +438,14 @@ function AboutView({ visible }) {
           Mix and match Classic (PS2) and Remastered (HD ReMIX) tracks per-song, or restore the
           full PS2 soundtrack in one click. Includes an in-game Soundtrack Switcher.
         </p>
+        {/electron/i.test(navigator.userAgent) && (
+          <p className="subtitle">
+            Also available online at{' '}
+            <a className="about-link" href="https://leinxad.github.io/KH-1-2-Classic-Soundtrack-Mods/" target="_blank" rel="noreferrer">
+              leinxad.github.io/KH-1-2-Classic-Soundtrack-Mods
+            </a>.
+          </p>
+        )}
 
         <div className="about-section">
           <h3>Overview</h3>
