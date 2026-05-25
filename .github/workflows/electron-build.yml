@@ -35,6 +35,10 @@ jobs:
           path: release\KH-Track-Selector-win32-x64\
           retention-days: 30
 
+      - name: Add antivirus info file
+        run: |
+          Set-Content -Path "release\KH-Track-Selector-win32-x64\in_case_you_have_antivirus_issues.txt" -Value "If your antivirus is blocking this app, you can use the online version instead:`n`nhttps://leinxad.github.io/KH-1-2-Classic-Soundtrack-Mods/"
+
       - name: Zip build output
         run: Compress-Archive -Path "release\KH-Track-Selector-win32-x64\*" -DestinationPath "release\KH-Track-Selector-win32-x64.zip"
 
