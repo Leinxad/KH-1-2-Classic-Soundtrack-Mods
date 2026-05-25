@@ -369,7 +369,7 @@ function GameSwitcherView({ game, visible }) {
 
         <div className="switcher-card">
           <h3>Installation</h3>
-          <p>Download the Switcher patch below and install it using <strong>OpenKH Mods Manager</strong>. The Lua script is already bundled inside the patch under <code>scripts/{game.id}/</code>.</p>
+          <p>Download the Switcher patch below and install it using <strong>OpenKH Mods Manager</strong>. The Lua script is already bundled inside the patch.</p>
         </div>
 
         <div className="switcher-card switcher-card-full">
@@ -628,22 +628,19 @@ async function generatePatch(game, allRows, selections, setProgress, classicPatc
   URL.revokeObjectURL(url)
 }
 
-// ── Switcher patch generation (bundles Lua script inside the patch) ───────────
+// ── Switcher patch generation ─────────────────────────────────────────────────
 
 async function generateSwitcherPatch(game, setStatus) {
   setStatus('downloading')
   try {
     const patchUrl = `${ZIPS_BASE}/${game.switcherPatchFileName}`
-    const luaUrl   = `${BASE}${game.switcherFile}`
 
-    const [patchRes, luaRes] = await Promise.all([fetch(patchUrl), fetch(luaUrl)])
+    const patchRes = await fetch(patchUrl)
     if (!patchRes.ok) throw new Error(`Failed to fetch switcher patch: ${patchRes.status}`)
-    if (!luaRes.ok)   throw new Error(`Failed to fetch Lua script: ${luaRes.status}`)
 
-    const [patchBuffer, luaText] = await Promise.all([patchRes.arrayBuffer(), luaRes.text()])
+    const patchBuffer = await patchRes.arrayBuffer()
 
     const patch = await JSZip.loadAsync(patchBuffer)
-    patch.file(`scripts/${game.id}/${game.switcherFile}`, luaText)
 
     const blob = await patch.generateAsync({ type: 'blob' })
     const url  = URL.createObjectURL(blob)
