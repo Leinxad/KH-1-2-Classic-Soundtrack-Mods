@@ -51,17 +51,17 @@ The Switcher lets you change between **Custom**, **Classic**, and **Remastered**
 
 | Buttons | Mode | Audio |
 |---------|------|-------|
-| Select + R2 + Triangle | Custom | OpenKH / modded audio (`amusic`) |
+| Select + R2 + Square | Custom | OpenKH / modded audio (`amusic`) |
+| Select + R2 + Triangle | Classic | PS2 classic audio (`amusi2`) |
 | Select + R2 + Circle | Remastered | HD remastered audio (`amusi3`) |
-| Select + R2 + Cross | Classic | PS2 classic audio (`amusi2`) |
 
 ### KH2 Button Combos
 
 | Buttons | Mode | Audio |
 |---------|------|-------|
-| Select + R2 + Triangle | Custom | OpenKH / modded audio (`bgm` / `vagstream`) |
+| Select + R2 + Square | Custom | OpenKH / modded audio (`bgm` / `vagstream`) |
+| Select + R2 + Triangle | Classic | PS2 classic audio (`bg2` / `vagstrea2`) |
 | Select + R2 + Circle | Remastered | HD remastered audio (`bg3` / `vagstrea3`) |
-| Select + R2 + Cross | Classic | PS2 classic audio (`bg2` / `vagstrea2`) |
 
 ### Steps
 

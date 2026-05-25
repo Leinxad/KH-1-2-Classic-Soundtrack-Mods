@@ -53,9 +53,9 @@ const GAMES = {
     switcherDesc: 'Switch between Custom, Classic, and Remastered soundtracks on the fly — no restart needed.',
 
     switcherCombos: [
-      { keys: 'Select + R2 + Triangle', mode: 'Custom', desc: 'OpenKH / modded audio (prefix: amusic)' },
+      { keys: 'Select + R2 + Square',   mode: 'Custom', desc: 'OpenKH / modded audio (prefix: amusic)' },
+      { keys: 'Select + R2 + Triangle', mode: 'Classic', desc: 'PS2 classic audio (prefix: amusi2)' },
       { keys: 'Select + R2 + Circle',   mode: 'Remastered', desc: 'HD remastered audio (prefix: amusi3)' },
-      { keys: 'Select + R2 + Cross',    mode: 'Classic', desc: 'PS2 classic audio (prefix: amusi2)' },
     ],
   },
   kh2: {
@@ -76,9 +76,9 @@ const GAMES = {
     switcherDesc: 'Switch between Custom, Classic, and Remastered soundtracks on the fly — no restart needed.',
 
     switcherCombos: [
-      { keys: 'Select + R2 + Triangle', mode: 'Custom', desc: 'OpenKH / modded audio (bgm / vagstream)' },
+      { keys: 'Select + R2 + Square',   mode: 'Custom', desc: 'OpenKH / modded audio (bgm / vagstream)' },
+      { keys: 'Select + R2 + Triangle', mode: 'Classic', desc: 'PS2 classic audio (bg2 / vagstrea2)' },
       { keys: 'Select + R2 + Circle',   mode: 'Remastered', desc: 'HD remastered audio (bg3 / vagstrea3)' },
-      { keys: 'Select + R2 + Cross',    mode: 'Classic', desc: 'PS2 classic audio (bg2 / vagstrea2)' },
     ],
   },
 }
@@ -350,6 +350,8 @@ function PatchStatusBadge({ status }) {
 // ── GameSwitcherView ─────────────────────────────────────────────────────────
 
 function GameSwitcherView({ game, visible }) {
+  const [dlStatus, setDlStatus] = useState(null)
+
   return (
     <div style={{ display: visible ? 'block' : 'none' }}>
       <header>
@@ -367,7 +369,7 @@ function GameSwitcherView({ game, visible }) {
 
         <div className="switcher-card">
           <h3>Installation</h3>
-          <p>Install both the Switcher patch and the Lua script using <strong>OpenKH Mods Manager</strong>.</p>
+          <p>Download the Switcher patch below and install it using <strong>OpenKH Mods Manager</strong>. The Lua script is already bundled inside the patch under <code>scripts/{game.id}/</code>.</p>
         </div>
 
         <div className="switcher-card switcher-card-full">
@@ -375,29 +377,21 @@ function GameSwitcherView({ game, visible }) {
           <div className="switcher-dl-list">
             <div className="switcher-dl-item">
               <div className="switcher-dl-info">
-                <strong>Lua Script</strong>
-              </div>
-              <a
-                className="btn"
-                href={`${BASE}${game.switcherFile}`}
-                download={game.switcherFile}
-              >
-                Download {game.switcherFile}
-              </a>
-            </div>
-
-            <div className="switcher-dl-item">
-              <div className="switcher-dl-info">
                 <strong>Switcher Patch</strong>
-                <span className="switcher-dl-desc">Includes both Classic and Remastered audio for in-game switching</span>
+                <span className="switcher-dl-desc">Includes both Classic and Remastered audio and the Lua script for in-game switching</span>
               </div>
               {ZIPS_BASE ? (
-                <a
-                  className="btn"
-                  href={`${ZIPS_BASE}/${game.switcherPatchFileName}`}
-                >
-                  Download Switcher Patch
-                </a>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <button
+                    className="btn"
+                    disabled={dlStatus === 'downloading'}
+                    onClick={() => generateSwitcherPatch(game, setDlStatus)}
+                  >
+                    {dlStatus === 'downloading' ? 'Preparing…' : 'Download Switcher Patch'}
+                  </button>
+                  {dlStatus === 'done'        && <span className="msg-success">Downloaded!</span>}
+                  {dlStatus === 'error'       && <span className="msg-error">Download failed. Check your connection and try again.</span>}
+                </div>
               ) : (
                 <span className="msg-error">Download URL not configured.</span>
               )}
@@ -492,7 +486,7 @@ function AboutView({ visible }) {
         <div className="about-section">
           <h3>Soundtrack Switcher — Installation</h3>
           <p>Switch between Custom, Classic, and Remastered soundtracks on the fly — no restart needed.</p>
-          <p>Install both the Switcher patch and the Lua script using <strong>OpenKH Mods Manager</strong>.</p>
+          <p>Download the Switcher patch from the <strong>Switcher</strong> tab and install it using <strong>OpenKH Mods Manager</strong>. The Lua script is already bundled inside the patch — no separate download needed.</p>
         </div>
 
         <div className="about-section">
@@ -632,4 +626,38 @@ async function generatePatch(game, allRows, selections, setProgress, classicPatc
   a.click()
   document.body.removeChild(a)
   URL.revokeObjectURL(url)
+}
+
+// ── Switcher patch generation (bundles Lua script inside the patch) ───────────
+
+async function generateSwitcherPatch(game, setStatus) {
+  setStatus('downloading')
+  try {
+    const patchUrl = `${ZIPS_BASE}/${game.switcherPatchFileName}`
+    const luaUrl   = `${BASE}${game.switcherFile}`
+
+    const [patchRes, luaRes] = await Promise.all([fetch(patchUrl), fetch(luaUrl)])
+    if (!patchRes.ok) throw new Error(`Failed to fetch switcher patch: ${patchRes.status}`)
+    if (!luaRes.ok)   throw new Error(`Failed to fetch Lua script: ${luaRes.status}`)
+
+    const [patchBuffer, luaText] = await Promise.all([patchRes.arrayBuffer(), luaRes.text()])
+
+    const patch = await JSZip.loadAsync(patchBuffer)
+    patch.file(`scripts/${game.id}/${game.switcherFile}`, luaText)
+
+    const blob = await patch.generateAsync({ type: 'blob' })
+    const url  = URL.createObjectURL(blob)
+    const a    = document.createElement('a')
+    a.href     = url
+    a.download = game.switcherPatchFileName
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+
+    setStatus('done')
+  } catch (e) {
+    console.error(e)
+    setStatus('error')
+  }
 }

@@ -6,15 +6,15 @@ LUAGUI_DESC = "Switch KH1FM between Custom, Classic and Remastered soundtracks"
 -- Place this script in scripts/kh1/.
 --
 -- Soundtrack is selected via in-game button combos (requires a recognised game version):
---   Select + R2 + Triangle  ->  custom      (OpenKH/modded audio  -> prefix: amusic)
+--   Select + R2 + Square    ->  custom      (OpenKH/modded audio  -> prefix: amusic)
+--   Select + R2 + Triangle  ->  classic     (PS2 classic audio    -> prefix: amusi2)
 --   Select + R2 + Circle    ->  remastered  (HD remastered audio  -> prefix: amusi3)
---   Select + R2 + Cross     ->  classic     (PS2 classic audio    -> prefix: amusi2)
 -- Defaults to custom on each script load.
 --
 -- Press F1 while the game is running to reload and re-apply the default.
 
--- In-game button combos (PS bitmask: Select=0x0001, R2=0x0200, Triangle=0x1000, Circle=0x2000, Cross=0x4000)
-local COMBO_CUSTOM     = 0x4201  -- Select+R2+Cross
+-- In-game button combos (PS bitmask: Select=0x0001, R2=0x0200, Square=0x0080, Triangle=0x1000, Circle=0x2000)
+local COMBO_CUSTOM     = 0x0281  -- Select+R2+Square
 local COMBO_CLASSIC    = 0x1201  -- Select+R2+Triangle
 local COMBO_REMASTERED = 0x2201  -- Select+R2+Circle
 
