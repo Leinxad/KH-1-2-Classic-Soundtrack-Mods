@@ -18,6 +18,32 @@ local COMBO_CUSTOM     = 0x0281  -- Select+R2+Square
 local COMBO_CLASSIC    = 0x1201  -- Select+R2+Triangle
 local COMBO_REMASTERED = 0x2201  -- Select+R2+Circle
 
+-- Config file stores the last selected soundtrack so it persists across sessions.
+local CONFIG_PATH = "scripts/kh2/kh2soundtrack.cfg"
+
+local function LoadConfig()
+    local f = io.open(CONFIG_PATH, "r")
+    if f then
+        local sel = f:read("*l")
+        f:close()
+        if sel == "custom" or sel == "classic" or sel == "remastered" then
+            ConsolePrint("KH2FM: loaded config -> " .. sel)
+            return sel
+        end
+    end
+    return "remastered"
+end
+
+local function SaveConfig(selection)
+    local f = io.open(CONFIG_PATH, "w")
+    if f then
+        f:write(selection)
+        f:close()
+    else
+        ConsolePrint("KH2FM: warning – could not write config to " .. CONFIG_PATH)
+    end
+end
+
 -- Convert a Lua string to a null-terminated byte array for WriteArrayA.
 local function StringToBytes(s)
     local t = {}
@@ -103,9 +129,10 @@ local function WriteSoundtrack(selection)
     WriteArrayA(titleAddr,  StringToBytes(s.title))
 end
 
--- Apply a soundtrack selection: write bytes to memory.
+-- Apply a soundtrack selection: write bytes to memory and persist the choice.
 local function ApplySoundtrack(selection)
     WriteSoundtrack(selection)
+    SaveConfig(selection)
     ConsolePrint("KH2FM soundtrack -> " .. selection)
     if musicAddr then
         ConsolePrint("KH2FM: vsb118=\"" .. ReadStr(vsb118Addr, 40) .. "\"")
@@ -159,15 +186,7 @@ function _OnInit()
                         gummi5Addr = BASE_ADDR + v[11]
                         reportAddr = BASE_ADDR + v[12]
                         titleAddr  = BASE_ADDR + v[13]
-                        ConsolePrint("KH2FM: vsb118=\"" .. ReadStr(vsb118Addr, 40) .. "\"")
-                        ConsolePrint("KH2FM: music=\""  .. ReadStr(musicAddr,  40) .. "\"")
-                        ConsolePrint("KH2FM: gummi1=\"" .. ReadStr(gummi1Addr, 40) .. "\"")
-                        ConsolePrint("KH2FM: gummi2=\"" .. ReadStr(gummi2Addr, 40) .. "\"")
-                        ConsolePrint("KH2FM: gummi3=\"" .. ReadStr(gummi3Addr, 40) .. "\"")
-                        ConsolePrint("KH2FM: gummi4=\"" .. ReadStr(gummi4Addr, 40) .. "\"")
-                        ConsolePrint("KH2FM: gummi5=\"" .. ReadStr(gummi5Addr, 40) .. "\"")
-                        ConsolePrint("KH2FM: report=\"" .. ReadStr(reportAddr, 40) .. "\"")
-                        ConsolePrint("KH2FM: title=\""  .. ReadStr(titleAddr,  40) .. "\"")
+                        ApplySoundtrack(LoadConfig())
                     end
                     break
                 end
