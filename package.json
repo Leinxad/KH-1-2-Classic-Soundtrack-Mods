@@ -1,0 +1,43 @@
+{
+  "name": "kh-1-2-classic-soundtrack-mods",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron:dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .\"",
+    "electron:build": "cross-env ELECTRON_BUILD=true vite build && electron-packager . \"KH-Track-Selector\" --platform=win32 --arch=x64 --out=release --overwrite --asar --ignore=\"(^/src|^/public|^/release|^/node_modules)\""
+  },
+  "build": {
+    "appId": "com.khmods.trackselector",
+    "productName": "KH Track Selector",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "win": {
+      "target": "zip"
+    }
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.0.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^42.2.0",
+    "electron-builder": "^26.8.1",
+    "vite": "^5.4.0",
+    "wait-on": "^9.0.10"
+  }
+}
