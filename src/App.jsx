@@ -4,6 +4,7 @@ import './App.css'
 
 const BASE = import.meta.env.BASE_URL
 const ZIPS_BASE = import.meta.env.VITE_ZIPS_BASE_URL ?? null
+const SWITCHER_ASSETS_BASE = import.meta.env.VITE_SWITCHER_ASSETS_BASE_URL ?? null
 
 // ── Per-game special-case rules (mirrors app.py patch logic) ────────────────
 
@@ -367,7 +368,7 @@ function GameSwitcherView({ game, visible }) {
 
         <div className="switcher-card">
           <h3>Installation</h3>
-          <p>Download the Switcher patch below and install it using <strong>OpenKH Mods Manager</strong>. The Lua script is already bundled inside the patch.</p>
+          <p>Download the Switcher patch below and install it using <strong>OpenKH Mods Manager</strong>. The Lua script is bundled inside the patch.</p>
         </div>
 
         <div className="switcher-card switcher-card-full">
@@ -378,16 +379,16 @@ function GameSwitcherView({ game, visible }) {
                 <strong>Switcher Patch</strong>
                 <span className="switcher-dl-desc">Includes both Classic and Remastered audio and the Lua script for in-game switching</span>
               </div>
-              {ZIPS_BASE ? (
+              {SWITCHER_ASSETS_BASE ? (
                 <a
                   className="btn switcher-download-btn"
-                  href={`${ZIPS_BASE}/${game.switcherPatchFileName}`}
+                  href={`${SWITCHER_ASSETS_BASE}/${game.switcherPatchFileName}`}
                   rel="noopener noreferrer"
                 >
                   Download Switcher Patch
                 </a>
               ) : (
-                <span className="msg-error">Download URL not configured.</span>
+                <span className="msg-error">Switcher download URL not configured.</span>
               )}
             </div>
           </div>
@@ -480,7 +481,7 @@ function AboutView({ visible }) {
         <div className="about-section">
           <h3>Soundtrack Switcher — Installation</h3>
           <p>Switch between Custom, Classic, and Remastered soundtracks on the fly — no restart needed.</p>
-          <p>Download the Switcher patch from the <strong>Switcher</strong> tab and install it using <strong>OpenKH Mods Manager</strong>. The Lua script is already bundled inside the patch — no separate download needed.</p>
+          <p>Download the Switcher patch from the <strong>Switcher</strong> tab and install it using <strong>OpenKH Mods Manager</strong>. The Lua script is bundled inside the patch.</p>
         </div>
 
         <div className="about-section">
