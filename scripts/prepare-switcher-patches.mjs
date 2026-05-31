@@ -40,18 +40,18 @@ for (const target of targets) {
   const buffer = await res.arrayBuffer()
   const zip = await JSZip.loadAsync(buffer)
 
-  const luaEntries = Object.keys(zip.files).filter(
-    p => !zip.files[p].dir && p.toLowerCase().endsWith('.lua')
-  )
+  const targetLuaName = target.lua.toLowerCase()
+  const conflictingLuaEntries = Object.keys(zip.files).filter(p => {
+    if (zip.files[p].dir) return false
+    const normalized = p.replace(/\\/g, '/').toLowerCase()
+    return normalized === targetLuaName || normalized.endsWith(`/${targetLuaName}`)
+  })
 
-  if (luaEntries.length > 0) {
-    for (const entry of luaEntries) {
-      zip.file(entry, luaContent)
-    }
-  } else {
-    zip.file(target.lua, luaContent)
-    zip.file(`scripts/${target.lua}`, luaContent)
+  for (const entry of conflictingLuaEntries) {
+    zip.remove(entry)
   }
+
+  zip.file(`scripts/${target.lua}`, luaContent)
 
   const patched = await zip.generateAsync({ type: 'nodebuffer' })
   await writeFile(outPath, patched)
