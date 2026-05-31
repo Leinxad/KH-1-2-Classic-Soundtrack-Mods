@@ -350,8 +350,6 @@ function PatchStatusBadge({ status }) {
 // ── GameSwitcherView ─────────────────────────────────────────────────────────
 
 function GameSwitcherView({ game, visible }) {
-  const [dlStatus, setDlStatus] = useState(null)
-
   return (
     <div style={{ display: visible ? 'block' : 'none' }}>
       <header>
@@ -381,17 +379,13 @@ function GameSwitcherView({ game, visible }) {
                 <span className="switcher-dl-desc">Includes both Classic and Remastered audio and the Lua script for in-game switching</span>
               </div>
               {ZIPS_BASE ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <button
-                    className="btn"
-                    disabled={dlStatus === 'downloading'}
-                    onClick={() => generateSwitcherPatch(game, setDlStatus)}
-                  >
-                    {dlStatus === 'downloading' ? 'Preparing…' : 'Download Switcher Patch'}
-                  </button>
-                  {dlStatus === 'done'        && <span className="msg-success">Downloaded!</span>}
-                  {dlStatus === 'error'       && <span className="msg-error">Download failed. Check your connection and try again.</span>}
-                </div>
+                <a
+                  className="btn switcher-download-btn"
+                  href={`${ZIPS_BASE}/${game.switcherPatchFileName}`}
+                  rel="noopener noreferrer"
+                >
+                  Download Switcher Patch
+                </a>
               ) : (
                 <span className="msg-error">Download URL not configured.</span>
               )}
@@ -438,14 +432,6 @@ function AboutView({ visible }) {
           Mix and match Classic (PS2) and Remastered (HD ReMIX) tracks per-song, or restore the
           full PS2 soundtrack in one click. Includes an in-game Soundtrack Switcher.
         </p>
-        {/electron/i.test(navigator.userAgent) && (
-          <p className="subtitle">
-            Also available online at{' '}
-            <a className="about-link" href="https://leinxad.github.io/KH-1-2-Classic-Soundtrack-Mods/" target="_blank" rel="noreferrer">
-              leinxad.github.io/KH-1-2-Classic-Soundtrack-Mods
-            </a>.
-          </p>
-        )}
 
         <div className="about-section">
           <h3>Overview</h3>
@@ -636,33 +622,3 @@ async function generatePatch(game, allRows, selections, setProgress, classicPatc
   URL.revokeObjectURL(url)
 }
 
-// ── Switcher patch generation ─────────────────────────────────────────────────
-
-async function generateSwitcherPatch(game, setStatus) {
-  setStatus('downloading')
-  try {
-    const patchUrl = `${ZIPS_BASE}/${game.switcherPatchFileName}`
-
-    const patchRes = await fetch(patchUrl)
-    if (!patchRes.ok) throw new Error(`Failed to fetch switcher patch: ${patchRes.status}`)
-
-    const patchBuffer = await patchRes.arrayBuffer()
-
-    const patch = await JSZip.loadAsync(patchBuffer)
-
-    const blob = await patch.generateAsync({ type: 'blob' })
-    const url  = URL.createObjectURL(blob)
-    const a    = document.createElement('a')
-    a.href     = url
-    a.download = game.switcherPatchFileName
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-
-    setStatus('done')
-  } catch (e) {
-    console.error(e)
-    setStatus('error')
-  }
-}
