@@ -39,7 +39,7 @@ jobs:
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
           VITE_ZIPS_BASE_URL: ${{ vars.VITE_ZIPS_BASE_URL }}
-          VITE_SWITCHER_ASSETS_BASE_URL: https://github.com/${{ github.repository_owner }}/KH1-2-Tracks/releases/download/tracks
+          VITE_SWITCHER_ASSETS_BASE_URL: ${{ vars.VITE_SWITCHER_ASSETS_BASE_URL }}
 
       - uses: actions/upload-pages-artifact@v3
         with:
