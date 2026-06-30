@@ -65,7 +65,7 @@ The Switcher lets you change between **Custom**, **Classic**, and **Remastered**
 
 ### Steps
 
-Install the Switcher patch (`kh1-Switcher.kh1pcpatch` or `kh2-Switcher.kh2pcpatch`) using **OpenKH Mods Manager**. The Lua script is bundled inside the patch.
+Install the Switcher patch (`kh1-Switcher.zip` or `kh2-Switcher.zip`) using **OpenKH Mods Manager**. The Lua script is bundled inside the patch.
 
 ---
 
