@@ -3,8 +3,7 @@ import JSZip from 'jszip'
 import './App.css'
 
 const BASE = import.meta.env.BASE_URL
-const ZIPS_BASE = import.meta.env.VITE_ZIPS_BASE_URL ?? null
-const SWITCHER_ASSETS_BASE = import.meta.env.VITE_SWITCHER_ASSETS_BASE_URL ?? null
+const ASSETS_BASE = import.meta.env.VITE_ASSETS_BASE_URL ?? null
 
 // ── Per-game special-case rules (mirrors app.py patch logic) ────────────────
 
@@ -105,15 +104,15 @@ function GameDownloadsView({ game, visible }) {
                 ? 'Original PS2 synthesised / MIDI soundtrack.'
                 : 'Fully orchestrated HD re-recording from the 1.5+2.5 HD ReMIX collection.'}
             </p>
-            {ZIPS_BASE ? (
+            {ASSETS_BASE ? (
               <a
                 className="btn"
-                href={`${ZIPS_BASE}/${game.assetBase}-${version}.${game.id}pcpatch`}
+                href={`${ASSETS_BASE}/${game.assetBase}-${version}.${game.id}pcpatch`}
               >
                 Download {version}
               </a>
             ) : (
-              <span className="msg-error">Download URL not configured.</span>
+              <span className="msg-error">VITE_ASSETS_BASE_URL not configured.</span>
             )}
           </div>
         ))}
@@ -379,16 +378,16 @@ function GameSwitcherView({ game, visible }) {
                 <strong>Switcher Patch</strong>
                 <span className="switcher-dl-desc">Includes both Classic and Remastered audio and the Lua script for in-game switching</span>
               </div>
-              {SWITCHER_ASSETS_BASE ? (
+              {ASSETS_BASE ? (
                 <a
                   className="btn switcher-download-btn"
-                  href={`${SWITCHER_ASSETS_BASE}/${game.switcherPatchFileName}`}
+                  href={`${ASSETS_BASE}/${game.switcherPatchFileName}`}
                   rel="noopener noreferrer"
                 >
                   Download Switcher Patch
                 </a>
               ) : (
-                <span className="msg-error">Switcher download URL not configured.</span>
+                <span className="msg-error">VITE_ASSETS_BASE_URL not configured.</span>
               )}
             </div>
           </div>
