@@ -48,7 +48,7 @@ const GAMES = {
     patchFileName: 'Soundtrack.kh1pcpatch',
     applyRules: applyKH1Rules,
     switcherFile: 'kh1soundtrack.lua',
-    switcherPatchFileName: 'kh1-Switcher.zip',
+    switcherPatchFileName: 'kh1-Switcher.kh1pcpatch',
     switcherDesc: 'Switch between Custom, Classic, and Remastered soundtracks on the fly — no restart needed.',
 
     switcherCombos: [
@@ -66,7 +66,7 @@ const GAMES = {
     patchFileName: 'Soundtrack.kh2pcpatch',
     applyRules: applyKH2Rules,
     switcherFile: 'kh2soundtrack.lua',
-    switcherPatchFileName: 'kh2-Switcher.zip',
+    switcherPatchFileName: 'kh2-Switcher.kh2pcpatch',
     switcherDesc: 'Switch between Custom, Classic, and Remastered soundtracks on the fly — no restart needed.',
 
     switcherCombos: [
