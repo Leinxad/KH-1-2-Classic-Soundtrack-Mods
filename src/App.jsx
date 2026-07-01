@@ -46,7 +46,6 @@ const GAMES = {
     jsonFile: 'kh1.json',
     assetBase: 'kh1',
     patchFileName: 'Soundtrack.kh1pcpatch',
-    emptyDirs: [],
     applyRules: applyKH1Rules,
     switcherFile: 'kh1soundtrack.lua',
     switcherPatchFileName: 'kh1-Switcher.zip',
@@ -65,7 +64,6 @@ const GAMES = {
     jsonFile: 'kh2.json',
     assetBase: 'kh2',
     patchFileName: 'Soundtrack.kh2pcpatch',
-    emptyDirs: [],
     applyRules: applyKH2Rules,
     switcherFile: 'kh2soundtrack.lua',
     switcherPatchFileName: 'kh2-Switcher.zip',
@@ -588,9 +586,6 @@ async function generatePatch(game, allRows, selections, setProgress, classicPatc
   const combinedPaths = [...allPaths, ...remasteredExtraPaths]
 
   const outputPatch = new JSZip()
-  for (const placeholder of game.emptyDirs) {
-    outputPatch.file(placeholder, '')
-  }
 
   setProgress({ current: 0, total: combinedPaths.length, label: 'Building patch' })
   let done = 0
